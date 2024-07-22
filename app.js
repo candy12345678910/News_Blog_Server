@@ -1,5 +1,6 @@
 const express=require("express")
 require("dotenv").config()
+
 const app=express();
 const port=process.env.PORT || 8000
 const cookieParser = require('cookie-parser')
@@ -7,14 +8,16 @@ const cors = require('cors')
 const connection=require("./connection")
 
 const user=require("./models/user")
+const apiFetch=require("./routes/apiFetch")
 const post=require("./models/post")
-
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors())
 app.use(cookieParser())
 
+
+app.use("/api/fetch/",apiFetch)
 
 app.get("/",async(req,res)=>{
     const data=await user.find({
