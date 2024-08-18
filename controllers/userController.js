@@ -4,8 +4,10 @@ const jwt = require('jsonwebtoken');
 
 // Login HandlerFunction
 const login=(req,res)=>{
-    res.send("Login")
+    return res.status(200).send({'token': req.cookies.newsToken})
 }
+
+//Profile HandlerFunction
 
 
 // Register HandlerFunction
@@ -14,34 +16,51 @@ const register = async (req, res) => {
     try {
         const data = await user.findOne({ email });
         if (data) {
-            res.status(201).send("Email already exists");
+            return res.status(201).send("Email already exists");
         }
 
         const saltRounds = parseInt(process.env.SALT_ROUNDS) || 10;
-        
+
         bcrypt.genSalt(saltRounds, function(err, salt) {
-            bcrypt.hash(password, salt, async function(err, hash) {  
-                await user.create({
-                    name,
-                    email,
-                    password: hash
-                })
-                .then((data)=>{
-                    const token = jwt.sign({ email, password }, process.env.JWT_KEY);                    
-                    res.cookie("newsToken", token,{maxAge: 3600000}).send(email)
-                })
-                .catch(err=>res.send("Error ocured while storing in data base, bujhle khoka: "+err))
+            if (err) {
+                return res.status(500).send("Error generating salt");
+            }
+
+            bcrypt.hash(password, salt, async function(err, hash) {
+                if (err) {
+                    return res.status(500).send("Error hashing password");
+                }
+
+                try {
+                    const newUser = await user.create({
+                        name,
+                        email,
+                        password: hash
+                    });
+
+                    const token = jwt.sign({ email, password }, process.env.JWT_KEY);
+                    res.cookie("newsToken", token, { maxAge: 3600000 });
+                    return res.send(email);
+                } catch (err) {
+                    return res.status(500).send("Error occurred while storing in database: " + err);
+                }
             });
-        });        
+        });
     } catch (err) {
-        res.status(500).send("Error occurred while checking email is present or not");
+        return res.status(500).send("Error occurred while checking if email is present: " + err);
     }
 };
+
+//Logout HandlerFunction
+const logout=(req, res)=>{
+    res.cookie('newsToken','').send("You need to be logged in")
+}
 
 
 
 
 module.exports={
     login,
-    register
+    register,
+    logout
 }
