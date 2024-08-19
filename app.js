@@ -7,10 +7,11 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const connection=require("./connection")
 
-const user=require("./models/user")
+// const user=require("./models/user")
+// const post=require("./models/post")
 const apiFetch=require("./routes/apiFetch")
-const post=require("./models/post")
 const userRoute=require("./routes/user")
+const postRoute=require("./routes/post")
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -25,34 +26,7 @@ app.use(cookieParser())
 
 app.use("/api/fetch/",apiFetch)
 app.use("/api/user/",userRoute)
-
-app.get("/",async(req,res)=>{
-    const data=await user.find({
-        email: "Sayan@gmail.com"
-    })
-    console.log(data)
-    res.send(data)}
-)
-
-
-app.get("/create",async (req,res)=>{
-    await user.create({
-        name: "Sayan",
-        email: "Sayan@gmail.com",
-        password: "password"
-    })
-    .then((show)=>{
-        console.log(show)
-        res.send(show)
-    })
-    .catch(err=>{
-        console.log("Email already present")
-        res.send("Email already present")
-    })
-    
-    
-})
-
+app.use("/api/post/",postRoute)
 app.get("/*",(req,res)=>res.send("404 Page not found"))
 
 app.listen(port,()=>console.log(`Server started at port ${port}`))

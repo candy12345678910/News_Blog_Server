@@ -3,12 +3,39 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // Login HandlerFunction
-const login=(req,res)=>{
-    return res.status(200).send({'token': req.cookies.newsToken})
+const login=async(req,res)=>{
+    const { email, password }=req.body
+    const data=await user.findOne({email})
+    // console.log(data.password)
+    if(!data){
+        return res.status(201).send("No account found")
+    }
+    try{
+        bcrypt.compare(password, data.password, function(err, result){
+            if (result) {
+                console.log('Password matches!');    
+                const token = jwt.sign({ email, password }, process.env.JWT_KEY);
+                res.cookie("newsToken", token, { maxAge: 3600000 });
+                return res.status(200).send({'msg': "Logged in"})
+            } else {
+                console.log('Password does not match.');
+                return res.status(202).send("Password not matched")
+            }
+        });
+    }
+    catch(err){
+        console.log("Error occured while hashing password")
+    }
 }
 
 //Profile HandlerFunction
-
+const profile=async (req, res)=>{
+    const data=await user.findOne({email: req.user.email})
+    if(!data){
+        return res.status(201).send({ "msg": "No user found" })
+    }
+    return res.status(200).send(data)
+}
 
 // Register HandlerFunction
 const register = async (req, res) => {
@@ -40,7 +67,7 @@ const register = async (req, res) => {
 
                     const token = jwt.sign({ email, password }, process.env.JWT_KEY);
                     res.cookie("newsToken", token, { maxAge: 3600000 });
-                    return res.send(email);
+                    return res.status(200).send({'msg': "Registered"});
                 } catch (err) {
                     return res.status(500).send("Error occurred while storing in database: " + err);
                 }
@@ -57,10 +84,9 @@ const logout=(req, res)=>{
 }
 
 
-
-
 module.exports={
     login,
     register,
+    profile,
     logout
 }

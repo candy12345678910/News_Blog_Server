@@ -1,4 +1,3 @@
-const user = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const isLoggedin = (req, res, next) => {
@@ -13,7 +12,7 @@ const isLoggedin = (req, res, next) => {
 
     try {
         const data = jwt.verify(req.cookies.newsToken, process.env.JWT_KEY);
-        console.log(data);
+        // console.log(data);
         req.user = data;
         next();
     } catch (err) {
