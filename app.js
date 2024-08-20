@@ -7,8 +7,6 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const connection=require("./connection")
 
-// const user=require("./models/user")
-// const post=require("./models/post")
 const apiFetch=require("./routes/apiFetch")
 const userRoute=require("./routes/user")
 const postRoute=require("./routes/post")
