@@ -10,9 +10,13 @@ const connection=require("./connection")
 const apiFetch=require("./routes/apiFetch")
 const userRoute=require("./routes/user")
 const postRoute=require("./routes/post")
+const adminRoute=require("./routes/admin")
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: [
+            'https://news-blog-bay.vercel.app',
+            'http://localhost:5173'
+        ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -21,7 +25,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieParser())
 
-
+app.use("/api/admin",adminRoute)
 app.use("/api/fetch/",apiFetch)
 app.use("/api/user/",userRoute)
 app.use("/api/post/",postRoute)

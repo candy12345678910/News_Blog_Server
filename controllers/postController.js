@@ -18,7 +18,7 @@ const createPost=async(req,res)=>{
     try{
         const { email, title, content }=req.body
         const userData=await user.findOne({email})
-        const postData=await post.create({name: userData.name, email, title, content, user: userData._id})
+        const postData=await post.create({name: userData.name, email, img: userData.img, title, content, user: userData._id})
         userData.post.push(postData._id)
         await userData.save()
         // console.log(postData)

@@ -39,7 +39,8 @@ const profile=async (req, res)=>{
 
 // Register HandlerFunction
 const register = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, img } = req.body;
+
     try {
         const data = await user.findOne({ email });
         if (data) {
@@ -62,7 +63,8 @@ const register = async (req, res) => {
                     const newUser = await user.create({
                         name,
                         email,
-                        password: hash
+                        password: hash,
+                        img
                     });
 
                     const token = jwt.sign({ email, password }, process.env.JWT_KEY);
