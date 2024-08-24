@@ -1,6 +1,7 @@
 const user=require("../models/user")
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
 // Login HandlerFunction
 const login=async(req,res)=>{
@@ -80,6 +81,38 @@ const register = async (req, res) => {
     }
 };
 
+//Otp sender
+const sendOtp = async (req, res)=>{
+    
+    const otp=Math.floor(100000 + Math.random() * 900000).toString()
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'skigamerz4@gmail.com',
+          pass: 'dcehulyzlxokjbzc'
+        }
+      });
+      
+      const mailOptions = {
+        from: 'skigamerz4@gmail.com',
+        to: req.body.email,
+        subject: 'NewsBlog OTP',
+        text: otp
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log("Error when sending otp to email: "+error);
+          return res.status(201).send("Invalid email")
+        } else {
+          console.log('Email sent: ' + info.response);
+          return res.status(200).send(otp)
+        }
+      });
+
+}
+
 //Logout HandlerFunction
 const logout=(req, res)=>{
     res.cookie('newsToken','').send("You need to be logged in")
@@ -90,5 +123,6 @@ module.exports={
     login,
     register,
     profile,
+    sendOtp,
     logout
 }

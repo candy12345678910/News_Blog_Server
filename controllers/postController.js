@@ -1,6 +1,18 @@
 const user=require("../models/user")
 const post=require("../models/post")
 
+//Sending all users
+const allUser=async(req, res)=>{
+    try{
+        const users=await user.find({})
+        // console.log(posts)
+        return res.status(200).send(users)
+    }
+    catch(err){
+        console.log("Error occured in blog: "+err)
+    }
+}
+
 //Sending all posts
 const allPost=async(req,res)=>{
     try{
@@ -42,6 +54,7 @@ const userPost=async(req, res)=>{
 
 //Post Delete handler function
 const deletePost=async(req, res)=>{
+    // console.log(req.body)
     try{
         const { _id, email }=req.body
         const userData=await user.findOne({email})
@@ -57,6 +70,7 @@ const deletePost=async(req, res)=>{
 }
 
 module.exports={ 
+    allUser,
     allPost,
     createPost,
     userPost,
