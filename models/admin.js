@@ -3,14 +3,15 @@ const mongoose=require("mongoose")
 const adminSchema=mongoose.Schema({
         email: {
             type: String,
-            required: true
+            unique: true,
+            required: true,
         },
         password: {
             type: String, 
             required: true
         },
         superAdmin: {
-            type: String,
+            type: Boolean,
             default: false
         }
     },

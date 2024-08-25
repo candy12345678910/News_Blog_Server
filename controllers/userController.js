@@ -79,7 +79,48 @@ const register = async (req, res) => {
     } catch (err) {
         return res.status(500).send("Error occurred while checking if email is present: " + err);
     }
-};
+}
+
+// Reset Password
+const resetPassword = async(req, res)=>{
+    const { email, password }=req.body
+    const data=await user.findOne({email})
+    // console.log(data.password)
+    if(!data){
+        return res.status(202).send("No account found")
+    }
+    try{
+        bcrypt.compare(password, data.password, function(err, result){
+            if (result) {
+                console.log('Password matches!');
+                return res.status(201).send({'msg': "The new password must be different from the old password"})
+            }
+            else{
+                const saltRounds = parseInt(process.env.SALT_ROUNDS) || 10;
+                bcrypt.genSalt(saltRounds, function(err, salt) {
+                    if (err) {
+                        return res.status(500).send("Error generating salt");
+                    }
+
+                    bcrypt.hash(password, salt, async function(err, hash) {
+                        if (err) {
+                            return res.status(500).send("Error hashing password");
+                        }
+                        try {
+                            await user.updateOne({"email": email},{$set: {"password": hash}})
+                            return res.status(200).send({'msg': "Password Changed"});
+                        } catch (err) {
+                            return res.status(500).send("Error occurred while updating the password: " + err);
+                        }
+                    });
+                })
+            }
+        });
+    }
+    catch(err){
+        console.log("Error occured while hashing password")
+    }
+}
 
 //Otp sender
 const sendOtp = async (req, res)=>{
@@ -123,6 +164,7 @@ module.exports={
     login,
     register,
     profile,
+    resetPassword,
     sendOtp,
     logout
 }

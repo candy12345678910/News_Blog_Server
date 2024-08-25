@@ -27,8 +27,8 @@ app.use(cookieParser())
 
 app.use("/api/admin",adminRoute)
 app.use("/api/fetch/",apiFetch)
-app.use("/api/user/",userRoute)
-app.use("/api/post/",postRoute)
+app.use("/api/user",userRoute)
+app.use("/api/post",postRoute)
 app.get("/*",(req,res)=>res.send("404 Page not found"))
 
 app.listen(port,()=>console.log(`Server started at port ${port}`))
