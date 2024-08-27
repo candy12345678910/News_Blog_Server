@@ -16,7 +16,7 @@ app.use(cors({
     origin: [
             'https://news-blog-bay.vercel.app',
             'http://localhost:5173',
-            'newsblogserver-production.up.railway.app'
+            'https://newsblogserver-production.up.railway.app'
         ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
