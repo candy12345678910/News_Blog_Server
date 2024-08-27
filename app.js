@@ -15,7 +15,8 @@ const adminRoute=require("./routes/admin")
 app.use(cors({
     origin: [
             'https://news-blog-bay.vercel.app',
-            'http://localhost:5173'
+            'http://localhost:5173',
+            'https://newsblogserver-production.up.railway.app'
         ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
