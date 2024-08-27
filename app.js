@@ -15,8 +15,7 @@ const adminRoute=require("./routes/admin")
 app.use(cors({
     origin: [
             'https://news-blog-bay.vercel.app',
-            'http://localhost:5173',
-            'https://newsblogserver-production.up.railway.app'
+            'http://localhost:5173'
         ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -30,6 +29,7 @@ app.use("/api/admin",adminRoute)
 app.use("/api/fetch/",apiFetch)
 app.use("/api/user",userRoute)
 app.use("/api/post",postRoute)
+app.get("/",(req,res)=>res.send("NewsBlog Server"))
 app.get("/*",(req,res)=>res.send("404 Page not found"))
 
 app.listen(port,()=>console.log(`Server started at port ${port}`))
